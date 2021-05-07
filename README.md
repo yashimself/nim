@@ -13,7 +13,7 @@ Make sure the computer player always have coins left in multiples of 4
 1. Open terminal in the root of the project
 2. run `python main.py`
 
-###Read about Nim here:
+### Read about Nim here:
 https://en.wikipedia.org/wiki/Nim
 
 https://www.researchgate.net/publication/221330080_Evolving_Winning_Strategies_for_Nim-like_Games
