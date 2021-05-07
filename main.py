@@ -7,7 +7,7 @@ class NimGame:
     def startState(self):
         return self.n
 
-    def isEnd(self, state):
+    def isEmpty(self, state):
         return True if state == 0 else False
 
     def utility(self, state, player):
@@ -22,33 +22,32 @@ class NimGame:
             return [1, 2, 3]
         return range(1, state + 1)
 
-    def successor(self, state, action):
-        if action > state:
+    def successor(self, state, withdrawn):
+        if withdrawn > state:
             return 0
-        return state - action
+        return state - withdrawn
 
 
 def minmax(game, state, player):
 
-    def recurse(state, player):
+    def recursivecheck(state, player):
 
-        if game.isEnd(state) == True:
+        if game.isEmpty(state) == True:
             return (game.utility(state, player), None) # i.e don't take any action
         if cache.has_key((state, player)): # check if the key is present in the dict
             return cache[(state, player)]
 
         # Check for all possible actions in the game 
-        choices = [(recurse(game.successor(state, action), -1 * player)[0], action) for action in game.actions(state)] 
+        choices = [(recursivecheck(game.successor(state, withdrawn), -1 * player)[0], withdrawn) for withdrawn in game.actions(state)] 
         if player == +1: 
             val = max(choices) # maximise for self
         else:
             val = min(choices) # minimise for opponent
         cache[(state, player)] = val
-        # print val
         return val
 
-    value, action = recurse(state, player)
-    return (value, action)
+    value, withdrawn = recursivecheck(state, player)
+    return (value, withdrawn)
 
 
 cache = {}
@@ -59,12 +58,12 @@ if __name__ == "__main__":
     state = game.startState()
     print("\t\t\t **** Game starts ****")
     while (state > 0):
-        action = 0
+        withdrawn = 0
         print "\n **** There are ", state, "coins in the bag currently **** \n"
-        while (action not in [1, 2, 3]) and state - action >= 0:
-            action = int(input(" \n ----->YOUR TURN<----- \n\n Choose number of coins to withdraw: 1,2,3\n"))
+        while (withdrawn not in [1, 2, 3]) and state - withdrawn >= 0:
+            withdrawn = int(input(" \n ----->YOUR TURN<----- \n\n Choose number of coins to withdraw: 1,2,3\n"))
 
-        state -= action
+        state -= withdrawn
         print "\n **** There are ", state, "coins in the bag currently **** \n"
         if state == 0:
             print("**** Congratulations! You won! ****")
